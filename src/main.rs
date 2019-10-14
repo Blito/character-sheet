@@ -15,10 +15,10 @@ where
         .margin(1)
         .constraints(
             [
-                Constraint::Percentage(10), // player header
+                Constraint::Percentage(15), // player header
                 Constraint::Percentage(10), // stats
                 Constraint::Percentage(70), // main
-                Constraint::Percentage(10)  // footer
+                Constraint::Percentage(5)  // footer
             ].as_ref()
         )
         .split(f.size());
@@ -38,7 +38,7 @@ where
     B: Backend 
 {
     Block::default()
-        .title("draw_player_header")
+        .title("Character")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
@@ -56,7 +56,7 @@ where
         .split(layout_chunk);
 
     let text = [
-        Text::styled("\nDandelion\n", Style::default().modifier(Modifier::BOLD)),
+        Text::styled("\nDandelion\n", Style::default().fg(Color::White).modifier(Modifier::BOLD)),
         Text::styled("Rock Gnome Wizard Lvl 3\n", Style::default())
     ];
     Paragraph::new(text.iter())
@@ -157,12 +157,12 @@ fn draw_player_stats<B>(f: &mut Frame<B>, layout_chunk: Rect)
         B: Backend
 {
     Block::default()
-        .title("draw_player_stats")
+        .title("Stats")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
     let inner_layout = Layout::default()
-        .margin(2)
+        .margin(1)
         .direction(Direction::Horizontal)
         .constraints(
             [
@@ -194,7 +194,7 @@ fn draw_stats<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("12 (+1) | ", Style::default()),
         Text::styled("CHA: ", Style::default().modifier(Modifier::BOLD)),
         Text::styled("11 (+0)", Style::default()),
-        Text::raw("\n\n"),
+        Text::raw("\n"),
         Text::styled("Armor class: ", Style::default().modifier(Modifier::BOLD)),
         Text::styled("14 | ", Style::default()),
         Text::styled("Initiative: ", Style::default().modifier(Modifier::BOLD)),
@@ -216,7 +216,9 @@ fn draw_hitpoints<B>(f: &mut Frame<B>, layout_chunk: Rect)
 {
     let hp_text = [
         Text::styled("Hit Points: ", Style::default().modifier(Modifier::BOLD)),
-        Text::styled("14 / 17 \n\n", Style::default()),
+        Text::styled("14 ", Style::default()),
+        Text::styled("/", Style::default().modifier(Modifier::BOLD)),
+        Text::styled(" 17 \n", Style::default()),
         Text::styled("H", Style::default().modifier(Modifier::UNDERLINED)),
         Text::styled("eal | ", Style::default()),
         Text::styled("D", Style::default().modifier(Modifier::UNDERLINED)),
@@ -236,13 +238,7 @@ fn draw_main<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    Block::default()
-        .title("draw_main")
-        .borders(Borders::ALL)
-        .render(f, layout_chunk);
-
     let inner_layout = Layout::default()
-        .margin(2)
         .direction(Direction::Horizontal)
         .constraints(
             [
@@ -264,28 +260,19 @@ fn draw_left_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    Block::default()
-        .title("draw_left_column")
-        .borders(Borders::ALL)
-        .render(f, layout_chunk);
-
     let inner_layout = Layout::default()
-        .margin(2)
         .direction(Direction::Vertical)
         .constraints(
             [
-                Constraint::Percentage(33), // Saving Throws
-                Constraint::Percentage(33), // Senses
-                Constraint::Percentage(34) // Proficiencies & Languages
+                Constraint::Percentage(35), // Saving Throws
+                Constraint::Percentage(65) // Proficiencies & Languages
             ].as_ref()
         )
         .split(layout_chunk);
 
     draw_saving_throws(f, inner_layout[0]);
 
-    draw_senses(f, inner_layout[1]);
-
-    draw_proficiencies(f, inner_layout[2]);
+    draw_proficiencies(f, inner_layout[1]);
 }
 
 fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -293,7 +280,7 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         B: Backend
 {
     Block::default()
-        .title("draw_saving_throws")
+        .title("Saving Throws")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
@@ -302,8 +289,8 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .direction(Direction::Vertical)
         .constraints(
             [
-                Constraint::Percentage(60), // Saving Throws
-                Constraint::Percentage(40), // Advantages
+                Constraint::Percentage(80), // Saving Throws
+                Constraint::Percentage(20), // Advantages
             ].as_ref()
         )
         .split(layout_chunk);
@@ -312,11 +299,11 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("( ) STR: ", Style::default().modifier(Modifier::BOLD)),
         Text::styled("+0 | ", Style::default()),
         Text::styled("( ) DEX: ", Style::default().modifier(Modifier::BOLD)),
-        Text::styled("+3 \n\n", Style::default()),
+        Text::styled("+3 \n", Style::default()),
         Text::styled("( ) CON: ", Style::default().modifier(Modifier::BOLD)),
         Text::styled("+1 | ", Style::default()),
         Text::styled("(*) INT: ", Style::default().modifier(Modifier::BOLD)),
-        Text::styled("+6 \n\n", Style::default()),
+        Text::styled("+6 \n", Style::default()),
         Text::styled("(*) WIS: ", Style::default().modifier(Modifier::BOLD)),
         Text::styled("+3 | ", Style::default()),
         Text::styled("( ) CHA: ", Style::default().modifier(Modifier::BOLD)),
@@ -340,56 +327,12 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .render(f, inner_layout[1]);
 }
 
-fn draw_senses<B>(f: &mut Frame<B>, layout_chunk: Rect)
-    where
-        B: Backend
-{
-    Block::default()
-        .title("draw_senses")
-        .borders(Borders::ALL)
-        .render(f, layout_chunk);
-
-    let inner_layout = Layout::default()
-        .margin(2)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(80),
-                Constraint::Percentage(20)
-            ].as_ref()
-        )
-        .split(layout_chunk);
-
-    let row_style = Style::default().fg(Color::White);
-    Table::new(
-        ["", ""].into_iter(),
-        vec![
-            Row::StyledData(["11", "Passive WIS (Percept.)"].into_iter(), row_style),
-            Row::StyledData(["16", "Passive INT (Investig.)"].into_iter(), row_style),
-            Row::StyledData(["11", "Passive WIS (Insight)"].into_iter(), row_style),
-        ].into_iter()
-    )
-        .widths(&[2, 26])
-        .style(Style::default().fg(Color::White))
-        .column_spacing(2)
-        .render(f, inner_layout[0]);
-
-    let senses = [
-        Text::styled("Darkvision 60 ft. ", Style::default()),
-    ];
-
-    Paragraph::new(senses.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, inner_layout[1]);
-}
-
 fn draw_proficiencies<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
     Block::default()
-        .title("draw_proficiencies")
+        .title("Proficiencies & Languages")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
@@ -423,13 +366,32 @@ fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
+    let inner_layout = Layout::default()
+        .constraints(
+            [
+                Constraint::Percentage(80), // Skills
+                Constraint::Percentage(20), // Senses
+            ].as_ref()
+        )
+        .split(layout_chunk);
+
+    draw_skills(f, inner_layout[0]);
+
+    draw_senses(f, inner_layout[1]);
+}
+
+fn draw_skills<B>(f: &mut Frame<B>, layout_chunk: Rect)
+    where
+        B: Backend
+{
     Block::default()
-        .title("draw_center_column")
+        .title("Skills")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
     let inner_layout = Layout::default()
-        .margin(2)
+        .margin(1)
+        .direction(Direction::Vertical)
         .constraints(
             [
                 Constraint::Percentage(100),
@@ -441,23 +403,23 @@ fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
     Table::new(
         ["Prof", "Mod", "Skill", "Bonus"].into_iter(),
         vec![
-            Row::StyledData(["( )", "DEX", "Acrobatics", "+3"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Animal Handling", "+1"].into_iter(), row_style),
-            Row::StyledData(["(*)", "DEX", "Arcana", "+6"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Athletics", "+0"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Deception", "+0"].into_iter(), row_style),
-            Row::StyledData(["(*)", "DEX", "History", "+6"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Insight", "+1"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Intimidation", "+0"].into_iter(), row_style),
-            Row::StyledData(["(*)", "DEX", "Investigation", "+6"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Medicine", "+1"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Nature", "+4"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Perception", "+1"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Performance", "+0"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Religion", "+4"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Sleight of Hand", "+3"].into_iter(), row_style),
-            Row::StyledData(["(*)", "DEX", "Stealth", "+5"].into_iter(), row_style),
-            Row::StyledData(["( )", "DEX", "Survival", "+1"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Acrobatics", "+3"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Animal Handling", "+1"].into_iter(), row_style),
+            Row::StyledData([" ⭐️ ", "DEX", "Arcana", "+6"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Athletics", "+0"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Deception", "+0"].into_iter(), row_style),
+            Row::StyledData([" ⭐️ ", "DEX", "History", "+6"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Insight", "+1"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Intimidation", "+0"].into_iter(), row_style),
+            Row::StyledData([" ⭐️ ", "DEX", "Investigation", "+6"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Medicine", "+1"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Nature", "+4"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Perception", "+1"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Performance", "+0"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Religion", "+4"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Sleight of Hand", "+3"].into_iter(), row_style),
+            Row::StyledData([" ⭐️ ", "DEX", "Stealth", "+5"].into_iter(), row_style),
+            Row::StyledData(["   ", "DEX", "Survival", "+1"].into_iter(), row_style),
         ].into_iter()
     )
         .header_style(Style::default().fg(Color::Yellow))
@@ -467,17 +429,57 @@ fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .render(f, inner_layout[0]);
 }
 
+fn draw_senses<B>(f: &mut Frame<B>, layout_chunk: Rect)
+    where
+        B: Backend
+{
+    Block::default()
+        .title("Senses")
+        .borders(Borders::ALL)
+        .render(f, layout_chunk);
+
+    let inner_layout = Layout::default()
+        .margin(1)
+        .direction(Direction::Vertical)
+        .constraints(
+            [
+                Constraint::Percentage(80),
+                Constraint::Percentage(20),
+            ].as_ref()
+        )
+        .split(layout_chunk);
+
+    let senses = [
+        Text::styled("11   Passive WIS (Perception) \n", Style::default().fg(Color::White)),
+        Text::styled("16   Passive INT (Investigation) \n", Style::default().fg(Color::White)),
+        Text::styled("11   Passive WIS (Insight) \n", Style::default().fg(Color::White)),
+    ];
+
+    Paragraph::new(senses.iter())
+        .alignment(Alignment::Left)
+        .wrap(true)
+        .render(f, inner_layout[0]);
+
+    let darkvision = [
+        Text::styled("Darkvision 60 ft. ", Style::default()),
+    ];
+
+    Paragraph::new(darkvision.iter())
+        .alignment(Alignment::Center)
+        .wrap(true)
+        .render(f, inner_layout[1]);
+}
+
 fn draw_main_panel<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
     Block::default()
-        .title("draw_main_panel")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
     let inner_layout = Layout::default()
-        .margin(2)
+        .margin(1)
         .direction(Direction::Vertical)
         .constraints(
             [
@@ -572,7 +574,7 @@ fn draw_spells_list<B>(f: &mut Frame<B>, layout_chunk: Rect)
         ].into_iter()
     )
         .header_style(Style::default().fg(Color::Yellow))
-        .widths(&[2, 16, 3, 5, 6, 8, 10])
+        .widths(&[2, 20, 3, 6, 6, 8, 15])
         .style(Style::default().fg(Color::White))
         .column_spacing(2)
         .render(f, inner_layout[0]);
