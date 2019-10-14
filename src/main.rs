@@ -348,6 +348,40 @@ fn draw_senses<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .title("draw_senses")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
+
+    let inner_layout = Layout::default()
+        .margin(2)
+        .direction(Direction::Vertical)
+        .constraints(
+            [
+                Constraint::Percentage(80),
+                Constraint::Percentage(20)
+            ].as_ref()
+        )
+        .split(layout_chunk);
+
+    let row_style = Style::default().fg(Color::White);
+    Table::new(
+        ["", ""].into_iter(),
+        vec![
+            Row::StyledData(["11", "Passive WIS (Percept.)"].into_iter(), row_style),
+            Row::StyledData(["16", "Passive INT (Investig.)"].into_iter(), row_style),
+            Row::StyledData(["11", "Passive WIS (Insight)"].into_iter(), row_style),
+        ].into_iter()
+    )
+        .widths(&[2, 26])
+        .style(Style::default().fg(Color::White))
+        .column_spacing(2)
+        .render(f, inner_layout[0]);
+
+    let senses = [
+        Text::styled("Darkvision 60 ft. ", Style::default()),
+    ];
+
+    Paragraph::new(senses.iter())
+        .alignment(Alignment::Center)
+        .wrap(true)
+        .render(f, inner_layout[1]);
 }
 
 fn draw_proficiencies<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -358,6 +392,31 @@ fn draw_proficiencies<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .title("draw_proficiencies")
         .borders(Borders::ALL)
         .render(f, layout_chunk);
+
+    let inner_layout = Layout::default()
+        .margin(2)
+        .direction(Direction::Vertical)
+        .constraints(
+            [
+                Constraint::Percentage(100),
+            ].as_ref()
+        )
+        .split(layout_chunk);
+
+    let proficiencies = [
+        Text::styled("ARMOR \n", Style::default().modifier(Modifier::BOLD).fg(Color::White)),
+        Text::styled("None \n\n", Style::default()),
+        Text::styled("WEAPONS \n", Style::default().modifier(Modifier::BOLD).fg(Color::White)),
+        Text::styled("Crossbow, Light, Dagger, Dart, Quarterstaff, Sling \n\n", Style::default()),
+        Text::styled("TOOLS \n", Style::default().modifier(Modifier::BOLD).fg(Color::White)),
+        Text::styled("Tinker's Tools \n\n", Style::default()),
+        Text::styled("LANGUAGES \n", Style::default().modifier(Modifier::BOLD).fg(Color::White)),
+        Text::styled("Common, Dwarvish, Elvish, Gnomish", Style::default()),
+    ];
+
+    Paragraph::new(proficiencies.iter())
+        .wrap(true)
+        .render(f, inner_layout[0]);
 }
 
 fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -380,7 +439,7 @@ fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
 
     let row_style = Style::default().fg(Color::White);
     Table::new(
-        ["PROF", "MOD", "SKILL", "BONUS"].into_iter(),
+        ["Prof", "Mod", "Skill", "Bonus"].into_iter(),
         vec![
             Row::StyledData(["( )", "DEX", "Acrobatics", "+3"].into_iter(), row_style),
             Row::StyledData(["( )", "DEX", "Animal Handling", "+1"].into_iter(), row_style),
