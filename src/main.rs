@@ -6,6 +6,16 @@ use tui::layout::{Layout, Constraint, Direction, Rect, Alignment};
 use tui::widgets::{Widget, Block, Borders, Text, Paragraph, Table, Row, Tabs};
 use tui::style::{Color, Modifier, Style};
 
+fn render_paragraph<B>(f: &mut Frame<B>, text: &[Text], layout: &Rect, alignment: &Alignment)
+    where
+        B: Backend
+{
+    Paragraph::new(text.iter())
+        .alignment(Alignment::Center)
+        .wrap(true)
+        .render(f, *layout);
+}
+
 fn draw_all_layout<B>(f: &mut Frame<B>)
 where
     B: Backend 
@@ -59,9 +69,8 @@ where
         Text::styled("\nDandelion\n", Style::default().fg(Color::White).modifier(Modifier::BOLD)),
         Text::styled("Rock Gnome Wizard Lvl 3\n", Style::default())
     ];
-    Paragraph::new(text.iter())
-        .wrap(true)
-        .render(f, inner_layout[1]);
+
+    render_paragraph(f, &text, &inner_layout[1], &Alignment::Left);
 
     draw_picture(f, inner_layout[0]);
 
@@ -117,10 +126,8 @@ fn draw_short_rest<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("S", Style::default().fg(Color::White).modifier(Modifier::UNDERLINED)),
         Text::styled("hort rest ⛺", Style::default().fg(Color::White)),
     ];
-    Paragraph::new(short_rest.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, inner_short_rest_layout[0]);
+
+    render_paragraph(f, &short_rest, &inner_short_rest_layout[0], &Alignment::Center);
 }
 
 fn draw_long_rest<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -144,10 +151,8 @@ fn draw_long_rest<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("L", Style::default().fg(Color::White).modifier(Modifier::UNDERLINED)),
         Text::styled("ong rest 🌖", Style::default().fg(Color::White)),
     ];
-    Paragraph::new(long_rest.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, inner_long_rest_layout[0]);
+
+    render_paragraph(f, &long_rest, &inner_long_rest_layout[0], &Alignment::Center);
 }
 // ####### END PLAYER HEADER ########
 
@@ -205,9 +210,7 @@ fn draw_stats<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("25 ft", Style::default()),
     ];
 
-    Paragraph::new(stats_text.iter())
-        .wrap(true)
-        .render(f, layout_chunk);
+    render_paragraph(f, &stats_text, &layout_chunk, &Alignment::Left);
 }
 
 fn draw_hitpoints<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -225,10 +228,7 @@ fn draw_hitpoints<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("amage", Style::default()),
     ];
 
-    Paragraph::new(hp_text.iter())
-        .alignment(Alignment::Right)
-        .wrap(true)
-        .render(f, layout_chunk);
+    render_paragraph(f, &hp_text, &layout_chunk, &Alignment::Right);
 }
 
 // ####### END PLAYER STATS ########
@@ -310,10 +310,7 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("+0", Style::default()),
     ];
 
-    Paragraph::new(saving_throws.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, inner_layout[0]);
+    render_paragraph(f, &saving_throws, &inner_layout[0], &Alignment::Left);
 
     let advantages = [
         Text::styled("Advantage on ", Style::default()),
@@ -321,10 +318,7 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("against Magic", Style::default()),
     ];
 
-    Paragraph::new(advantages.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, inner_layout[1]);
+    render_paragraph(f, &advantages, &inner_layout[1], &Alignment::Left);
 }
 
 fn draw_proficiencies<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -357,9 +351,7 @@ fn draw_proficiencies<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("Common, Dwarvish, Elvish, Gnomish", Style::default()),
     ];
 
-    Paragraph::new(proficiencies.iter())
-        .wrap(true)
-        .render(f, inner_layout[0]);
+    render_paragraph(f, &proficiencies, &inner_layout[0], &Alignment::Left);
 }
 
 fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -455,19 +447,13 @@ fn draw_senses<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("11   Passive WIS (Insight) \n", Style::default().fg(Color::White)),
     ];
 
-    Paragraph::new(senses.iter())
-        .alignment(Alignment::Left)
-        .wrap(true)
-        .render(f, inner_layout[0]);
+    render_paragraph(f, &senses, &inner_layout[0], &Alignment::Left);
 
     let darkvision = [
         Text::styled("Darkvision 60 ft. ", Style::default()),
     ];
 
-    Paragraph::new(darkvision.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, inner_layout[1]);
+    render_paragraph(f, &darkvision, &inner_layout[1], &Alignment::Center);
 }
 
 fn draw_main_panel<B>(f: &mut Frame<B>, layout_chunk: Rect)
@@ -523,7 +509,7 @@ fn draw_modifiers<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    let modifiers_text_= [
+    let modifiers_text = [
         Text::styled("Modifier: ", Style::default().modifier(Modifier::BOLD)),
         Text::styled("+4   ", Style::default()),
         Text::styled("Spell Attack: ", Style::default().modifier(Modifier::BOLD)),
@@ -532,10 +518,7 @@ fn draw_modifiers<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("14 ", Style::default()),
     ];
 
-    Paragraph::new(modifiers_text_.iter())
-        .alignment(Alignment::Center)
-        .wrap(true)
-        .render(f, layout_chunk);
+    render_paragraph(f, &modifiers_text, &layout_chunk, &Alignment::Center);
 }
 
 fn draw_spells_list<B>(f: &mut Frame<B>, layout_chunk: Rect)
