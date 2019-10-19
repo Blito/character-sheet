@@ -11,9 +11,21 @@ fn render_paragraph<B>(f: &mut Frame<B>, text: &[Text], layout: &Rect, alignment
         B: Backend
 {
     Paragraph::new(text.iter())
-        .alignment(Alignment::Center)
+        .alignment(*alignment)
         .wrap(true)
         .render(f, *layout);
+}
+
+fn create_layout(parent: &Rect, direction: Direction, percentages: &[u16], margin: u16) -> Vec<Rect>
+{
+    let constraints: Vec<Constraint> = percentages.iter()
+        .map(|percentage| Constraint::Percentage(*percentage) ).collect();
+
+    Layout::default()
+        .direction(direction)
+        .margin(margin)
+        .constraints(constraints)
+        .split(*parent)
 }
 
 fn draw_all_layout<B>(f: &mut Frame<B>)
@@ -238,16 +250,8 @@ fn draw_main<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    let inner_layout = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints(
-            [
-                Constraint::Percentage(25), // Column 1
-                Constraint::Percentage(25), // Column 2
-                Constraint::Percentage(50) // Main
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Horizontal, &[25, 25, 50], 1);
 
     draw_left_column(f, inner_layout[0]);
 
@@ -260,15 +264,8 @@ fn draw_left_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    let inner_layout = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(35), // Saving Throws
-                Constraint::Percentage(65) // Proficiencies & Languages
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[35, 65], 1);
 
     draw_saving_throws(f, inner_layout[0]);
 
@@ -284,16 +281,8 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
-    let inner_layout = Layout::default()
-        .margin(2)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(80), // Saving Throws
-                Constraint::Percentage(20), // Advantages
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[80, 20], 2);
 
     let saving_throws = [
         Text::styled("( ) STR: ", Style::default().modifier(Modifier::BOLD)),
@@ -310,7 +299,7 @@ fn draw_saving_throws<B>(f: &mut Frame<B>, layout_chunk: Rect)
         Text::styled("+0", Style::default()),
     ];
 
-    render_paragraph(f, &saving_throws, &inner_layout[0], &Alignment::Left);
+    render_paragraph(f, &saving_throws, &inner_layout[0], &Alignment::Center);
 
     let advantages = [
         Text::styled("Advantage on ", Style::default()),
@@ -330,15 +319,8 @@ fn draw_proficiencies<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
-    let inner_layout = Layout::default()
-        .margin(2)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(100),
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[100], 2);
 
     let proficiencies = [
         Text::styled("ARMOR \n", Style::default().modifier(Modifier::BOLD).fg(Color::White)),
@@ -358,14 +340,8 @@ fn draw_center_column<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    let inner_layout = Layout::default()
-        .constraints(
-            [
-                Constraint::Percentage(80), // Skills
-                Constraint::Percentage(20), // Senses
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[80, 20], 1);
 
     draw_skills(f, inner_layout[0]);
 
@@ -381,15 +357,8 @@ fn draw_skills<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
-    let inner_layout = Layout::default()
-        .margin(1)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(100),
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[100], 1);
 
     let row_style = Style::default().fg(Color::White);
     Table::new(
@@ -430,16 +399,8 @@ fn draw_senses<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
-    let inner_layout = Layout::default()
-        .margin(1)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(80),
-                Constraint::Percentage(20),
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[80, 20], 1);
 
     let senses = [
         Text::styled("11   Passive WIS (Perception) \n", Style::default().fg(Color::White)),
@@ -464,16 +425,8 @@ fn draw_main_panel<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
-    let inner_layout = Layout::default()
-        .margin(1)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Percentage(10), // tabs headers
-                Constraint::Percentage(90) // tabs content
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[10, 90], 1);
 
     Tabs::default()
         .titles(&["Actions", "Spells", "Equipment", "Features & Traits", "Description"])
@@ -489,16 +442,8 @@ fn draw_spells_tab<B>(f: &mut Frame<B>, layout_chunk: Rect)
     where
         B: Backend
 {
-    let inner_layout = Layout::default()
-        .margin(2)
-        .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Max(2), // Modifiers
-                Constraint::Min(10), // Spells list
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[10, 90], 2);
 
     draw_modifiers(f, inner_layout[0]);
 
@@ -530,14 +475,8 @@ fn draw_spells_list<B>(f: &mut Frame<B>, layout_chunk: Rect)
         .borders(Borders::ALL)
         .render(f, layout_chunk);
 
-    let inner_layout = Layout::default()
-        .margin(2)
-        .constraints(
-            [
-                Constraint::Percentage(100),
-            ].as_ref()
-        )
-        .split(layout_chunk);
+    let inner_layout = create_layout(
+        &layout_chunk, Direction::Vertical, &[100], 2);
 
     let row_style = Style::default().fg(Color::White);
     Table::new(
