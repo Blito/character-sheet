@@ -1,3 +1,3 @@
-pub use main_app::draw_app;
+pub use main_app::MainApp;
 
 mod main_app;
