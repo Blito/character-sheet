@@ -9,7 +9,7 @@ fn main() -> Result<(), io::Error> {
 
     let dandelion = Character { name: String::from("Dandelion") };
 
-    let main_app = MainApp { character: &dandelion };
+    let main_app = MainApp::new ( &dandelion )?;
 
     main_app.draw_app()
 }

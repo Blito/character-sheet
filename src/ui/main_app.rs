@@ -31,27 +31,20 @@ fn create_layout(parent: &Rect, direction: Direction, percentages: &[u16], margi
 }
 
 pub struct MainApp<'a> {
-    pub character: &'a character::Character
+    character: &'a character::Character
 }
 
 impl MainApp<'_> {
+
+    pub fn new(character: &character::Character) -> Result<MainApp, io::Error> {
+        Ok(MainApp { character })
+    }
 
     fn draw_all_layout<B>(&self, f: &mut Frame<B>)
         where
             B: Backend
     {
-        let layout_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(15), // player header
-                    Constraint::Percentage(10), // stats
-                    Constraint::Percentage(70), // main
-                    Constraint::Percentage(5)  // footer
-                ].as_ref()
-            )
-            .split(f.size());
+    let layout_chunks = create_layout(&f.size(), Direction::Vertical, &[15, 10, 70, 5], 1);
 
         self.draw_player_header(f, layout_chunks[0]);
 
@@ -72,18 +65,7 @@ impl MainApp<'_> {
             .borders(Borders::ALL)
             .render(f, layout_chunk);
 
-        let inner_layout = Layout::default()
-            .direction(Direction::Horizontal)
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(10), // Picture
-                    Constraint::Percentage(30), // Name
-                    Constraint::Percentage(30), // Free Space
-                    Constraint::Percentage(40)  // Short / Long Rests
-                ].as_ref()
-            )
-            .split(layout_chunk);
+        let inner_layout = create_layout(&layout_chunk, Direction::Horizontal, &[10, 30, 30, 40], 1);
 
         let name = "\n".to_owned() + &self.character.name + "\n";
         let text = [
@@ -111,16 +93,7 @@ impl MainApp<'_> {
         where
             B: Backend
     {
-        let inner_layout = Layout::default()
-            .direction(Direction::Horizontal)
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(50), // Short Rest
-                    Constraint::Percentage(50), // Long Rest
-                ].as_ref()
-            )
-            .split(layout_chunk);
+        let inner_layout = create_layout(&layout_chunk, Direction::Horizontal, &[50, 50], 1);
 
         self.draw_short_rest(f, inner_layout[0]);
         self.draw_long_rest(f, inner_layout[1]);
@@ -134,14 +107,7 @@ impl MainApp<'_> {
         Block::default()
             .borders(Borders::ALL).render(f, button_size);
 
-        let inner_short_rest_layout = Layout::default()
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(100), // Short Rest
-                ].as_ref()
-            )
-            .split(layout_chunk);
+        let inner_short_rest_layout = create_layout(&layout_chunk, Direction::Horizontal, &[100], 1);
 
         let short_rest = [
             Text::styled("S", Style::default().fg(Color::White).modifier(Modifier::UNDERLINED)),
@@ -159,14 +125,7 @@ impl MainApp<'_> {
         Block::default()
             .borders(Borders::ALL).render(f, button_size);
 
-        let inner_long_rest_layout = Layout::default()
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(100), // Short Rest
-                ].as_ref()
-            )
-            .split(layout_chunk);
+        let inner_long_rest_layout = create_layout(&layout_chunk, Direction::Horizontal, &[100], 1);
 
         let long_rest = [
             Text::styled("L", Style::default().fg(Color::White).modifier(Modifier::UNDERLINED)),
@@ -187,16 +146,7 @@ impl MainApp<'_> {
             .borders(Borders::ALL)
             .render(f, layout_chunk);
 
-        let inner_layout = Layout::default()
-            .margin(1)
-            .direction(Direction::Horizontal)
-            .constraints(
-                [
-                    Constraint::Percentage(70), // Main stats
-                    Constraint::Percentage(30), // HP
-                ].as_ref()
-            )
-            .split(layout_chunk);
+        let inner_layout = create_layout(&layout_chunk, Direction::Horizontal, &[70, 30], 1);
 
         self.draw_stats(f, inner_layout[0]);
 
@@ -525,13 +475,14 @@ impl MainApp<'_> {
     // ####### END FOOTER ########
 
     pub fn draw_app(&self) -> Result<(), io::Error> {
+
         let stdout = io::stdout().into_raw_mode()?;
         let backend = TermionBackend::new(stdout);
         let mut terminal = Terminal::new(backend)?;
         terminal.clear()?;
 
-        terminal.draw(|mut f| {
-            self.draw_all_layout(&mut f);
+        terminal.draw(|mut frame| {
+            self.draw_all_layout(&mut frame);
         })
     }
 }
