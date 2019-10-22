@@ -67,7 +67,7 @@ impl MainApp<'_> {
 
         let inner_layout = create_layout(&layout_chunk, Direction::Horizontal, &[10, 30, 30, 40], 1);
 
-        let name = "\n".to_owned() + &self.character.name + "\n";
+        let name = "\n".to_owned() + &self.character.get_name() + "\n";
         let text = [
             Text::styled(name, Style::default().fg(Color::White).modifier(Modifier::BOLD)),
             Text::styled("Rock Gnome Wizard Lvl 3\n", Style::default())
