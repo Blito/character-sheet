@@ -11,7 +11,7 @@ pub struct Character {
     current_hitpoints: i16,
     max_hitpoints: u16,
 
-    //stats: HashMap<stats::Stat, (u16, i16)>,
+    stats: HashMap<stats::Stat, (u16, i16)>,
 
     armor_class: u16,
     initiative: u16,
@@ -22,23 +22,39 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new(name: String) -> Character {
+    pub fn new(
+        name: String,
+        race: String,
+        class: String,
+        level: u16,
+        current_hitpoints: i16,
+        max_hitpoints: u16,
+
+        stats: HashMap<stats::Stat, (u16, i16)>,
+
+        armor_class: u16,
+        initiative: u16,
+        proficiency_bonus: u16,
+        walking_speed_in_ft: u16,
+
+        //skills: [skill::Skill; 17]
+    ) -> Character {
         use stats::Stat::*;
 
         Character {
             name,
-            race: String::from(""),
-            class: String::from(""),
-            level: 1,
+            race,
+            class,
+            level,
 
-            current_hitpoints: 1,
-            max_hitpoints: 1,
+            current_hitpoints,
+            max_hitpoints,
 
-            //stats: HashMap::new(),
-            armor_class: 0,
-            initiative: 0,
-            proficiency_bonus: 0,
-            walking_speed_in_ft: 30,
+            stats: HashMap::new(),
+            armor_class,
+            initiative,
+            proficiency_bonus,
+            walking_speed_in_ft,
             skills: [
                 skill::Skill { has_proficiency: false, stat: Dexterity, name: String::from("Acrobatics"), bonus: 3 },
                 skill::Skill { has_proficiency: false, stat: Wisdom, name: String::from("Animal Handling"), bonus: 1 },
@@ -64,4 +80,18 @@ impl Character {
     pub fn get_name(&self) -> &str {
         &self.name
     }
+
+    pub fn get_race(&self) -> &str { &self.race }
+
+    pub fn get_class(&self) -> &str {
+        &self.class
+    }
+
+    pub fn get_level(&self) -> &u16 { &self.level }
+
+    pub fn get_current_hitpoints(&self) -> &i16 { &self.current_hitpoints }
+
+    pub fn get_max_hitpoints(&self) -> &u16 { &self.max_hitpoints }
+
+    pub fn get_armor_class(&self) -> &u16 { &self.armor_class }
 }

@@ -68,9 +68,10 @@ impl MainApp<'_> {
         let inner_layout = create_layout(&layout_chunk, Direction::Horizontal, &[10, 30, 30, 40], 1);
 
         let name = "\n".to_owned() + &self.character.get_name() + "\n";
+        let race_class_lvl = self.character.get_race().to_owned() + " " + &self.character.get_class() + " Lvl " + &self.character.get_level().to_string() + "\n";
         let text = [
             Text::styled(name, Style::default().fg(Color::White).modifier(Modifier::BOLD)),
-            Text::styled("Rock Gnome Wizard Lvl 3\n", Style::default())
+            Text::styled(race_class_lvl, Style::default())
         ];
 
         render_paragraph(f, &text, &inner_layout[1], &Alignment::Left);
