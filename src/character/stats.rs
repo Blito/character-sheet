@@ -1,4 +1,4 @@
-#[derive(Eq, PartialEq, Hash)]
+#[derive(Eq, PartialEq, Hash, Deserialize, Serialize)]
 pub enum Stat {
     Strength,
     Dexterity,
