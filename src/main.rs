@@ -13,7 +13,7 @@ fn main() -> Result<(), io::Error> {
         String::from("Rock Gnome"),
         String::from("Wizard"),
         3,
-        17,
+        14,
         17,
         HashMap::new(),
         13,

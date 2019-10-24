@@ -173,13 +173,13 @@ impl MainApp<'_> {
             Text::styled("11 (+0)", Style::default()),
             Text::raw("\n"),
             Text::styled("Armor class: ", Style::default().modifier(Modifier::BOLD)),
-            Text::styled("14 | ", Style::default()),
+            Text::styled(self.character.get_armor_class().to_string() + " | ", Style::default()),
             Text::styled("Initiative: ", Style::default().modifier(Modifier::BOLD)),
-            Text::styled("+3 | ", Style::default()),
+            Text::styled("+".to_owned() + &self.character.get_initiative().to_string() + " | ", Style::default()),
             Text::styled("Proficiency bonus: ", Style::default().modifier(Modifier::BOLD)),
-            Text::styled("+2 | ", Style::default()),
+            Text::styled("+".to_owned() + &self.character.get_proficiency_bonus().to_string() + " | ", Style::default()),
             Text::styled("Walking speed: ", Style::default().modifier(Modifier::BOLD)),
-            Text::styled("25 ft", Style::default()),
+            Text::styled(self.character.get_walking_speed_in_ft().to_string() + " ft", Style::default()),
         ];
 
         render_paragraph(f, &stats_text, &layout_chunk, &Alignment::Left);
@@ -191,9 +191,9 @@ impl MainApp<'_> {
     {
         let hp_text = [
             Text::styled("Hit Points: ", Style::default().modifier(Modifier::BOLD)),
-            Text::styled("14 ", Style::default()),
-            Text::styled("/", Style::default().modifier(Modifier::BOLD)),
-            Text::styled(" 17 \n", Style::default()),
+            Text::styled(self.character.get_current_hitpoints().to_string() + " ", Style::default()),
+            Text::styled("/ ", Style::default().modifier(Modifier::BOLD)),
+            Text::styled(self.character.get_max_hitpoints().to_string() + " \n", Style::default()),
             Text::styled("H", Style::default().modifier(Modifier::UNDERLINED)),
             Text::styled("eal | ", Style::default()),
             Text::styled("D", Style::default().modifier(Modifier::UNDERLINED)),

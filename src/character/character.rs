@@ -94,4 +94,10 @@ impl Character {
     pub fn get_max_hitpoints(&self) -> &u16 { &self.max_hitpoints }
 
     pub fn get_armor_class(&self) -> &u16 { &self.armor_class }
+
+    pub fn get_initiative(&self) -> &u16 { &self.initiative }
+
+    pub fn get_proficiency_bonus(&self) -> &u16 { &self.proficiency_bonus }
+
+    pub fn get_walking_speed_in_ft(&self) -> &u16 { &self.walking_speed_in_ft }
 }
