@@ -1,62 +1,15 @@
-use std::io;
-use crate::character::Character;
-use crate::ui::MainApp;
+use std::process;
 
-mod ui;
-mod character;
+use terminal_test_1::Config;
 
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
+fn main() {
 
-fn main() -> Result<(), io::Error> {
+    let args: Vec<String> = Vec::new();
+    let config = Config::new(&args);
 
-    let dandelion_json = r#"
-    {
-        "name": "Dandelion",
-        "race": "Rock Gnome",
-        "class": "Wizard",
-        "level": 3,
+    if let Err(e) = terminal_test_1::run(config) {
+        println!("Application Error: {}", e);
 
-        "current_hitpoints": 14,
-        "max_hitpoints": 17,
-
-        "stats": {
-            "Strength": 11,
-            "Dexterity": 13
-        },
-
-        "armor_class": 14,
-        "initiative": 3,
-        "proficiency_bonus": 0,
-        "walking_speed_in_ft": 25,
-
-        "skills": [
-            { "has_proficiency": false, "stat": "Dexterity", "name": "Acrobatics", "bonus": 3 },
-            { "has_proficiency": false, "stat": "Wisdom", "name": "Animal Handling", "bonus": 1 },
-            { "has_proficiency": true, "stat": "Intellect", "name": "Arcana", "bonus": 6 },
-            { "has_proficiency": false, "stat": "Strength", "name": "Athletics", "bonus": 0 },
-            { "has_proficiency": false, "stat": "Charisma", "name": "Deception", "bonus": 0 },
-            { "has_proficiency": true, "stat": "Intellect", "name": "History", "bonus": 6 },
-            { "has_proficiency": false, "stat": "Wisdom", "name": "Insight", "bonus": 1 },
-            { "has_proficiency": false, "stat": "Charisma", "name": "Intimidation", "bonus": 0 },
-            { "has_proficiency": true, "stat": "Intellect", "name": "Investigation", "bonus": 6 },
-            { "has_proficiency": false, "stat": "Wisdom", "name": "Medicine", "bonus": 1 },
-            { "has_proficiency": false, "stat": "Intellect", "name": "Nature", "bonus": 4 },
-            { "has_proficiency": false, "stat": "Wisdom", "name": "Perception", "bonus": 1 },
-            { "has_proficiency": false, "stat": "Charisma", "name": "Performance", "bonus": 0 },
-            { "has_proficiency": false, "stat": "Intellect", "name": "Religion", "bonus": 4 },
-            { "has_proficiency": false, "stat": "Dexterity", "name": "Sleight of Hand", "bonus": 3 },
-            { "has_proficiency": true, "stat": "Dexterity", "name": "Stealth", "bonus": 5 },
-            { "has_proficiency": false, "stat": "Wisdom", "name": "Survival", "bonus": 1 }
-        ]
+        process::exit(1);
     }
-    "#;
-
-    let dandelion: Character = serde_json::from_str(dandelion_json)?;
-
-    let main_app = MainApp::new ( &dandelion )?;
-
-    main_app.draw_app()
 }
